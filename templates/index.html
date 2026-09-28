@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CYBER-RAG &mdash; Document Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="liquid-canvas">
+
+    <!-- LIQUID SPATIAL OPTICAL BACKDROP (UNDERLAY FOR GLASS REFRACTION) -->
+    <div class="liquid-atmosphere">
+        <div class="liquid-blob blob-1"></div>
+        <div class="liquid-blob blob-2"></div>
+        <div class="liquid-blob blob-3"></div>
+        <div class="liquid-blob blob-4"></div>
+    </div>
+    <div class="liquid-noise"></div>
+
+    <!-- FLOATING DYNAMIC ISLAND NAVIGATION BAR -->
+    <header class="ios-dynamic-nav">
+        <div class="nav-island-content">
+            <div class="nav-lead">
+                <div class="nav-glyph">
+                    <span class="glyph-core"></span>
+                </div>
+                <div class="nav-titles">
+                    <span class="brand-title">CYBER-RAG</span>
+                    <span class="brand-sub">Document Intelligence</span>
+                </div>
+            </div>
+
+            <!-- Architectural Micro-Telemetry -->
+            <div class="nav-specs-strip">
+                <span class="spec-node">MiniLM-L6 (384D)</span>
+                <span class="spec-dot">&bull;</span>
+                <span class="spec-node">FAISS IndexFlatIP</span>
+                <span class="spec-dot">&bull;</span>
+                <span class="spec-node">Groq Grounded</span>
+            </div>
+
+            <!-- Floating Status Capsule -->
+            <div class="nav-status-capsule">
+                <span id="indexStatusDot" class="status-orb status-standby"></span>
+                <span id="indexStatusText" class="status-label">Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN COCKPIT -->
+    <main class="ios-app-viewport">
+
+        <!-- SEGMENTED PROGRESS CONTROL & METRICS -->
+        <section class="ios-pipeline-capsule">
+            <div class="pipeline-scroll-container">
+                <div class="pipeline-segmented-rail">
+                    <div class="segment-step" id="stepUpload">
+                        <span class="step-badge">01</span>
+                        <span class="step-label">Upload</span>
+                    </div>
+                    <div class="segment-divider"></div>
+                    <div class="segment-step" id="stepExtract">
+                        <span class="step-badge">02</span>
+                        <span class="step-label">Extract</span>
+                    </div>
+                    <div class="segment-divider"></div>
+                    <div class="segment-step" id="stepChunk">
+                        <span class="step-badge">03</span>
+                        <span class="step-label">Chunk</span>
+                    </div>
+                    <div class="segment-divider"></div>
+                    <div class="segment-step" id="stepEmbed">
+                        <span class="step-badge">04</span>
+                        <span class="step-label">Embed</span>
+                    </div>
+                    <div class="segment-divider"></div>
+                    <div class="segment-step" id="stepIndex">
+                        <span class="step-badge">05</span>
+                        <span class="step-label">Index</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Metrics Capsule -->
+            <div class="pipeline-metrics-pod">
+                <span class="metric-pod-item"><strong id="metricDocsCount">0</strong> docs</span>
+                <span class="metric-dot">/</span>
+                <span class="metric-pod-item"><strong id="metricChunksCount">0</strong> chunks</span>
+            </div>
+        </section>
+
+        <!-- TWO-COLUMN ADAPTIVE LIQUID WORKSPACE -->
+        <div class="ios-adaptive-grid">
+            
+            <!-- LEFT MODULE: KNOWLEDGE BASE -->
+            <section class="ios-glass-card vault-pane">
+                <div class="card-header-bar">
+                    <div class="header-text-block">
+                        <h2 class="card-title">Knowledge Base</h2>
+                        <p class="card-subtitle">Documents indexed for semantic retrieval.</p>
+                    </div>
+                </div>
+
+                <!-- Liquid Touch Dropzone Receptacle -->
+                <div class="ios-dropzone" id="dropZone">
+                    <div class="dropzone-center">
+                        <div class="dropzone-liquid-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="dropzone-copy">
+                            <span class="copy-primary">Drop documents here or <label for="fileInput" class="browse-action">Browse</label></span>
+                            <span class="copy-sub">PDF · TXT · Maximum 16 MB</span>
+                        </div>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.txt" style="display:none;">
+                    </div>
+                </div>
+
+                <!-- Staged Payloads Tray -->
+                <div class="staged-tray" id="selectedFilesContainer" style="display:none;">
+                    <div class="staged-tray-caption">Staged for Indexing</div>
+                    <ul id="selectedFilesList" class="staged-items-list"></ul>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="ios-button-cluster">
+                    <button id="btnProcessIndex" class="ios-btn ios-btn-glass" disabled>
+                        <span>Index Documents</span>
+                    </button>
+                    <button id="btnResetIndex" class="ios-btn ios-btn-ghost-danger" title="Clear vector store memory">
+                        Clear Index
+                    </button>
+                </div>
+
+                <!-- Document Repository Shelf -->
+                <div class="ios-repo-shelf">
+                    <span class="shelf-caption">Indexed Documents</span>
+                    <div id="indexedDocsList" class="shelf-records-list">
+                        <div class="shelf-empty-state">No documents indexed yet. Upload a PDF or TXT file to begin.</div>
+                    </div>
+                </div>
+
+                <!-- System Activity (Secondary Collapsible) -->
+                <div class="activity-drawer">
+                    <button type="button" class="activity-trigger" id="btnToggleActivity">
+                        <span>System activity</span>
+                        <span id="activityToggleIcon" class="toggle-symbol">+</span>
+                    </button>
+                    <div id="processingLogBox" class="activity-viewport-shell" style="display:none;">
+                        <div id="processingLogText" class="activity-viewport-screen"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT MODULE: INTERROGATION & GROUNDED HERO -->
+            <section class="ios-glass-card query-pane">
+                <div class="card-header-bar">
+                    <div class="header-text-block">
+                        <h2 class="card-title">Ask your documents</h2>
+                        <p class="card-subtitle">Retrieve relevant context and generate a grounded answer.</p>
+                    </div>
+                </div>
+
+                <!-- Query Form -->
+                <form id="questionForm" class="ios-query-form">
+                    <div class="ios-textarea-wrapper">
+                        <textarea id="questionInput" rows="3" placeholder="Ask a question about your indexed documents…" required></textarea>
+                    </div>
+                    <div class="form-action-row">
+                        <button type="submit" id="btnAsk" class="ios-btn ios-btn-accent" disabled>
+                            <span>Ask Documents</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Floating Calibrated Loader -->
+                <div id="qaLoadingIndicator" class="ios-liquid-loader" style="display:none;">
+                    <span class="loader-pulse-dot"></span>
+                    <span id="qaLoadingMessage" class="loader-copy">Retrieving relevant context...</span>
+                </div>
+
+                <!-- Human Readable Alert Box -->
+                <div id="alertBox" class="ios-alert-surface" style="display:none;"></div>
+
+                <!-- HERO GROUNDED ANSWER EDITORIAL SURFACE -->
+                <div id="answerSection" class="ios-answer-hero" style="display:none;">
+                    <div class="hero-top-bar">
+                        <span class="hero-title">Answer</span>
+                        <span class="hero-grounded-pill">Grounded</span>
+                    </div>
+
+                    <div id="answerText" class="hero-editorial-body"></div>
+
+                    <!-- Source Citations Footprint -->
+                    <div class="source-footprint-panel">
+                        <span class="source-tag-caption">Source</span>
+                        <ul id="sourcesList" class="source-pill-row"></ul>
+                    </div>
+
+                    <!-- Expandable Retrieved Context Accordion -->
+                    <div class="context-retrieval-accordion">
+                        <button type="button" id="btnToggleContext" class="context-pill-trigger">
+                            <span id="contextToggleTitle" class="context-lead-text">Retrieved context</span>
+                            <span id="accordionIcon" class="accordion-arrow">&#8595;</span>
+                        </button>
+                        <div id="passagesContent" class="context-tray-viewport" style="display:none;"></div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+    </main>
+
+    <!-- SYSTEM FOOTER -->
+    <footer class="ios-footer">
+        <div class="footer-wrap">
+            <span>CYBER-RAG &bull; Document Intelligence System</span>
+            <span class="footer-dot">&bull;</span>
+            <span>NLP &amp; Information Retrieval</span>
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
